@@ -1,0 +1,46 @@
+import { Boss, Character, WeeklyBossClear } from "./types";
+
+export const characters: Character[] = [];
+
+export const bosses: Boss[] = [
+  { bossId: "hilla-hard", bossName: "힐라", difficulty: "HARD", requiredCombatPower: 800000, crystalPrice: 5750000 },
+  { bossId: "pinkbean-chaos", bossName: "핑크빈", difficulty: "CHAOS", requiredCombatPower: 1600000, crystalPrice: 6580000 },
+  { bossId: "cygnus-normal", bossName: "시그너스", difficulty: "NORMAL", requiredCombatPower: 600000, crystalPrice: 7500000 },
+  { bossId: "zakum-chaos", bossName: "자쿰", difficulty: "CHAOS", requiredCombatPower: 900000, crystalPrice: 8080000 },
+  { bossId: "bloodyqueen-chaos", bossName: "블러디퀸", difficulty: "CHAOS", requiredCombatPower: 3000000, crystalPrice: 8140000 },
+  { bossId: "banban-chaos", bossName: "반반", difficulty: "CHAOS", requiredCombatPower: 3000000, crystalPrice: 8150000 },
+  { bossId: "pierre-chaos", bossName: "피에르", difficulty: "CHAOS", requiredCombatPower: 3000000, crystalPrice: 8170000 },
+  { bossId: "magnus-hard", bossName: "매그너스", difficulty: "HARD", requiredCombatPower: 3000000, crystalPrice: 8560000 },
+  { bossId: "vellum-chaos", bossName: "벨룸", difficulty: "CHAOS", requiredCombatPower: 5000000, crystalPrice: 9280000 },
+  { bossId: "papulatus-chaos", bossName: "파풀라투스", difficulty: "CHAOS", requiredCombatPower: 6000000, crystalPrice: 13800000 },
+  { bossId: "suu-normal", bossName: "스우", difficulty: "NORMAL", requiredCombatPower: 7000000, crystalPrice: 17600000 },
+  { bossId: "demian-normal", bossName: "데미안", difficulty: "NORMAL", requiredCombatPower: 8000000, crystalPrice: 18400000 },
+  { bossId: "gas-normal", bossName: "가디언 엔젤 슬라임", difficulty: "NORMAL", requiredCombatPower: 8000000, crystalPrice: 26800000 },
+  { bossId: "lucid-easy", bossName: "루시드", difficulty: "EASY", requiredCombatPower: 12000000, crystalPrice: 31400000 },
+  { bossId: "will-easy", bossName: "윌", difficulty: "EASY", requiredCombatPower: 12000000, crystalPrice: 34000000 },
+  { bossId: "lucid-normal", bossName: "루시드", difficulty: "NORMAL", requiredCombatPower: 20000000, crystalPrice: 37500000 },
+  { bossId: "will-normal", bossName: "윌", difficulty: "NORMAL", requiredCombatPower: 25000000, crystalPrice: 43300000 },
+  { bossId: "dusk-normal", bossName: "더스크", difficulty: "NORMAL", requiredCombatPower: 16000000, crystalPrice: 46300000 },
+  { bossId: "dunkel-normal", bossName: "듄켈", difficulty: "NORMAL", requiredCombatPower: 18000000, crystalPrice: 50000000 },
+  { bossId: "demian-hard", bossName: "데미안", difficulty: "HARD", requiredCombatPower: 20000000, crystalPrice: 51500000 },
+  { bossId: "suu-hard", bossName: "스우", difficulty: "HARD", requiredCombatPower: 19000000, crystalPrice: 54200000 },
+  { bossId: "lucid-hard", bossName: "루시드", difficulty: "HARD", requiredCombatPower: 40000000, crystalPrice: 66200000 },
+  { bossId: "dusk-chaos", bossName: "더스크", difficulty: "CHAOS", requiredCombatPower: 40000000, crystalPrice: 73500000 },
+  { bossId: "hilla-jin-normal", bossName: "진 힐라", difficulty: "NORMAL", requiredCombatPower: 30000000, crystalPrice: 74900000 },
+  { bossId: "gas-chaos", bossName: "가디언 엔젤 슬라임", difficulty: "CHAOS", requiredCombatPower: 50000000, crystalPrice: 79100000 },
+  { bossId: "will-hard", bossName: "윌", difficulty: "HARD", requiredCombatPower: 50000000, crystalPrice: 81200000 },
+  { bossId: "dunkel-hard", bossName: "듄켈", difficulty: "HARD", requiredCombatPower: 50000000, crystalPrice: 99400000 },
+  { bossId: "hilla-jin-hard", bossName: "진 힐라", difficulty: "HARD", requiredCombatPower: 50000000, crystalPrice: 112000000 },
+  { bossId: "seren-normal", bossName: "세렌", difficulty: "NORMAL", requiredCombatPower: 80000000, crystalPrice: 266000000 },
+  { bossId: "kalos-easy", bossName: "감시자 칼로스", difficulty: "EASY", requiredCombatPower: 120000000, crystalPrice: 311000000 },
+  { bossId: "limbo-easy", bossName: "최초의 대적자", difficulty: "EASY", requiredCombatPower: 90000000, crystalPrice: 324000000 },
+  { bossId: "seren-hard", bossName: "세렌", difficulty: "HARD", requiredCombatPower: 180000000, crystalPrice: 396000000 },
+  { bossId: "kaling-easy", bossName: "카링", difficulty: "EASY", requiredCombatPower: 220000000, crystalPrice: 419000000 },
+  { bossId: "kalos-normal", bossName: "감시자 칼로스", difficulty: "NORMAL", requiredCombatPower: 250000000, crystalPrice: 561000000 },
+  { bossId: "blackmage-hard", bossName: "검은 마법사", difficulty: "HARD", requiredCombatPower: 120000000, crystalPrice: 700000000 },
+  { bossId: "kaling-normal", bossName: "카링", difficulty: "NORMAL", requiredCombatPower: 350000000, crystalPrice: 714000000 },
+  { bossId: "kalos-hard", bossName: "감시자 칼로스", difficulty: "HARD", requiredCombatPower: 400000000, crystalPrice: 1340000000 },
+  { bossId: "kaling-hard", bossName: "카링", difficulty: "HARD", requiredCombatPower: 800000000, crystalPrice: 1830000000 },
+];
+
+export const weeklyBossClears: WeeklyBossClear[] = [];
