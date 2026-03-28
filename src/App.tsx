@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
+﻿import { FormEvent, useEffect, useMemo, useState } from "react";
 import {
   bosses as initialBosses,
   characters as initialCharacters,
@@ -14,11 +14,11 @@ const CHARACTER_STORAGE_KEY = "maple-dashboard-characters";
 const BOSS_STORAGE_KEY = "maple-dashboard-bosses";
 const WEEKLY_CLEARS_STORAGE_KEY = "maple-dashboard-weekly-clears";
 const LEGACY_SAMPLE_NAMES = new Set([
-  "도리 아크메이지",
-  "도리 나이트로드",
-  "링크 팔라딘",
-  "농장 소울마스터",
-  "버닝 칼리",
+  "?꾨━ ?꾪겕硫붿씠吏",
+  "?꾨━ ?섏씠?몃줈??,
+  "留곹겕 ?붾씪??,
+  "?띿옣 ?뚯슱留덉뒪??,
+  "踰꾨떇 移쇰━",
 ]);
 
 type CharacterSummary = {
@@ -56,24 +56,43 @@ const emptyBossForm: BossFormState = {
 };
 
 function formatMeso(value: number) {
-  return `${currency.format(value)} 메소`;
+  return `${currency.format(value)} 硫붿냼`;
 }
 
 function formatCombatPower(value: number) {
   if (value >= 100_000_000) {
-    return `${(value / 100_000_000).toFixed(1)}억`;
+    return `${(value / 100_000_000).toFixed(1)}??;
   }
   if (value >= 10_000) {
-    return `${(value / 10_000).toFixed(0)}만`;
+    return `${(value / 10_000).toFixed(0)}留?;
   }
   return currency.format(value);
 }
 
 function formatRequiredCombatPower(value: number | null) {
   if (value === null) {
-    return "미정";
+    return "誘몄젙";
   }
   return formatCombatPower(value);
+}
+
+function getDifficultyLabel(difficulty: string) {
+  switch (difficulty) {
+    case "EASY":
+      return "\uC774\uC9C0";
+    case "NORMAL":
+      return "\uB178\uB9D0";
+    case "HARD":
+      return "\uD558\uB4DC";
+    case "CHAOS":
+      return "\uCE74\uC624\uC2A4";
+    default:
+      return difficulty;
+  }
+}
+
+function getDifficultyClassName(difficulty: string) {
+  return `difficulty-${difficulty.toLowerCase()}`;
 }
 
 function makeId(prefix: string) {
@@ -120,6 +139,8 @@ function App() {
   const [isCharacterEditMode, setIsCharacterEditMode] = useState(false);
   const [characterForm, setCharacterForm] = useState<CharacterFormState>(emptyCharacterForm);
   const [bossForm, setBossForm] = useState<BossFormState>(emptyBossForm);
+  const [bossSearch, setBossSearch] = useState("");
+  const [bossDifficultyFilter, setBossDifficultyFilter] = useState<string>("ALL");
 
   useEffect(() => {
     window.localStorage.setItem(BOSS_STORAGE_KEY, JSON.stringify(bosses));
@@ -214,13 +235,26 @@ function App() {
       return [];
     }
 
-    return bosses.map((boss) => ({
-      boss,
-      isCleared: clearedBossIdSet.has(boss.bossId),
-      isEligible:
-        boss.requiredCombatPower === null ? null : selectedCharacter.combatPower >= boss.requiredCombatPower,
-    }));
-  }, [clearedBossIdSet, selectedCharacter]);
+    const normalizedSearch = bossSearch.trim().toLowerCase();
+
+    return bosses
+      .filter((boss) => {
+        const matchesDifficulty =
+          bossDifficultyFilter === "ALL" || boss.difficulty === bossDifficultyFilter;
+        const matchesSearch =
+          normalizedSearch === "" ||
+          boss.bossName.toLowerCase().includes(normalizedSearch) ||
+          getDifficultyLabel(boss.difficulty).toLowerCase().includes(normalizedSearch);
+
+        return matchesDifficulty && matchesSearch;
+      })
+      .map((boss) => ({
+        boss,
+        isCleared: clearedBossIdSet.has(boss.bossId),
+        isEligible:
+          boss.requiredCombatPower === null ? null : selectedCharacter.combatPower >= boss.requiredCombatPower,
+      }));
+  }, [bossDifficultyFilter, bossSearch, bosses, clearedBossIdSet, selectedCharacter]);
 
   const dashboardStats = useMemo(
     () => ({
@@ -434,9 +468,9 @@ function App() {
       <header className="hero">
         <div className="hero-copy">
           <p className="eyebrow">Maple Weekly Operations</p>
-          <h1>메이플 보스 대시보드</h1>
+          <h1>硫붿씠??蹂댁뒪 ??쒕낫??/h1>
           <div className="hero-meta">
-            <span>현재 주차</span>
+            <span>?꾩옱 二쇱감</span>
             <strong>{currentWeekKey}</strong>
             <em>{formatWeekRange(currentDate)}</em>
           </div>
@@ -444,16 +478,16 @@ function App() {
 
         <div className="hero-panel">
           <div className="signal-card">
-            <span>전체 이번 주 수익</span>
+            <span>?꾩껜 ?대쾲 二??섏씡</span>
             <strong>{formatMeso(dashboardStats.totalWeeklyIncome)}</strong>
           </div>
           <div className="signal-grid">
             <article>
-              <span>캐릭터 수</span>
+              <span>罹먮┃????/span>
               <strong>{dashboardStats.totalCharacterCount}</strong>
             </article>
             <article>
-              <span>이번 주 클리어</span>
+              <span>?대쾲 二??대━??/span>
               <strong>{dashboardStats.totalWeeklyClearCount}</strong>
             </article>
           </div>
@@ -465,7 +499,7 @@ function App() {
           <div className="panel-heading">
             <div>
               <p className="eyebrow">Roster</p>
-              <h2>캐릭터 목록</h2>
+              <h2>罹먮┃??紐⑸줉</h2>
             </div>
             <div className="panel-actions">
               <button
@@ -473,18 +507,18 @@ function App() {
                 type="button"
                 onClick={() => setIsCharacterEditMode((current) => !current)}
               >
-                {isCharacterEditMode ? "수정모드 ON" : "수정모드"}
+                {isCharacterEditMode ? "?섏젙紐⑤뱶 ON" : "?섏젙紐⑤뱶"}
               </button>
               <button className="collapse-button add-button" type="button" onClick={openCharacterCreateModal}>
-                추가
+                異붽?
               </button>
             </div>
           </div>
 
           {characterSummaries.length === 0 ? (
             <div className="empty-state">
-              <strong>등록된 캐릭터가 없습니다.</strong>
-              <p>캐릭터를 등록하면 여기서 수정, 삭제, 주간 보스 운영을 시작할 수 있습니다.</p>
+              <strong>?깅줉??罹먮┃?곌? ?놁뒿?덈떎.</strong>
+              <p>罹먮┃?곕? ?깅줉?섎㈃ ?ш린???섏젙, ??젣, 二쇨컙 蹂댁뒪 ?댁쁺???쒖옉?????덉뒿?덈떎.</p>
             </div>
           ) : (
             <div className="roster-strip">
@@ -501,16 +535,16 @@ function App() {
                       </div>
                       <div className="roster-metrics-grid compact">
                         <div className="metric-box">
-                          <span>전투력</span>
+                          <span>?꾪닾??/span>
                           <strong>{formatCombatPower(summary.character.combatPower)}</strong>
                         </div>
                         <div className={`metric-box clear-state ${isComplete ? "is-complete" : "is-incomplete"}`}>
-                          <span>이번 주 클리어</span>
+                          <span>?대쾲 二??대━??/span>
                           <strong>{summary.clearCount} / 12</strong>
-                          <em>{isComplete ? "완료" : "미완료"}</em>
+                          <em>{isComplete ? "?꾨즺" : "誘몄셿猷?}</em>
                         </div>
                         <div className="metric-box metric-box-wide">
-                          <span>수익</span>
+                          <span>?섏씡</span>
                           <strong>{formatMeso(summary.weeklyIncome)}</strong>
                         </div>
                       </div>
@@ -518,10 +552,10 @@ function App() {
                     {isCharacterEditMode ? (
                       <div className="card-actions">
                         <button className="secondary-button" type="button" onClick={() => startEditingCharacter(summary.character)}>
-                          수정
+                          ?섏젙
                         </button>
                         <button className="danger-button" type="button" onClick={() => deleteCharacter(summary.character.characterId)}>
-                          삭제
+                          ??젣
                         </button>
                       </div>
                     ) : null}
@@ -536,7 +570,7 @@ function App() {
           <div className="panel-heading">
             <div>
               <p className="eyebrow">Character Detail</p>
-              <h2>{selectedCharacter?.characterName ?? "캐릭터 선택 필요"}</h2>
+              <h2>{selectedCharacter?.characterName ?? "罹먮┃???좏깮 ?꾩슂"}</h2>
             </div>
           </div>
 
@@ -544,19 +578,19 @@ function App() {
             <>
               <div className="detail-summary compact-detail">
                 <article>
-                  <span>직업</span>
+                  <span>吏곸뾽</span>
                   <strong>{selectedSummary.character.jobName}</strong>
                 </article>
                 <article>
-                  <span>전투력</span>
+                  <span>?꾪닾??/span>
                   <strong>{formatCombatPower(selectedSummary.character.combatPower)}</strong>
                 </article>
                 <article>
-                  <span>이번 주 수익</span>
+                  <span>?대쾲 二??섏씡</span>
                   <strong>{formatMeso(selectedSummary.weeklyIncome)}</strong>
                 </article>
                 <article>
-                  <span>이번 주 클리어</span>
+                  <span>?대쾲 二??대━??/span>
                   <strong>{selectedSummary.clearCount} / 12</strong>
                 </article>
               </div>
@@ -564,12 +598,12 @@ function App() {
               <div className="boss-columns compact-columns">
                 <div className="boss-column wide">
                   <div className="column-title">
-                    <h3>이번 주 잡은 보스</h3>
-                    <span>{selectedSummary.clearedBosses.length}마리</span>
+                    <h3>?대쾲 二??≪? 蹂댁뒪</h3>
+                    <span>{selectedSummary.clearedBosses.length}留덈━</span>
                   </div>
                   <div className="boss-chip-list">
                     {selectedSummary.clearedBosses.length === 0 ? (
-                      <span className="boss-chip">아직 체크된 보스가 없습니다</span>
+                      <span className="boss-chip">?꾩쭅 泥댄겕??蹂댁뒪媛 ?놁뒿?덈떎</span>
                     ) : (
                       selectedSummary.clearedBosses.map((boss) => (
                         <span key={boss.bossId} className="boss-chip cleared">
@@ -586,14 +620,14 @@ function App() {
                   <div className="panel-heading">
                     <div>
                       <p className="eyebrow">Boss Admin</p>
-                      <h2>보스 값 수정</h2>
+                      <h2>蹂댁뒪 媛??섏젙</h2>
                     </div>
                   </div>
 
                   <form className="boss-form" onSubmit={handleBossSubmit}>
                     <div className="boss-form-grid">
                       <label>
-                        <span>보스</span>
+                        <span>蹂댁뒪</span>
                         <select
                           value={bossForm.bossId}
                           onChange={(event) => {
@@ -608,7 +642,7 @@ function App() {
                             });
                           }}
                         >
-                          <option value="">보스를 선택하세요</option>
+                          <option value="">蹂댁뒪瑜??좏깮?섏꽭??/option>
                           {bossOptions.map((boss) => (
                             <option key={boss.bossId} value={boss.bossId}>
                               {boss.bossName} / {boss.difficulty}
@@ -617,7 +651,7 @@ function App() {
                         </select>
                       </label>
                       <label>
-                        <span>요구 전투력</span>
+                        <span>?붽뎄 ?꾪닾??/span>
                         <input
                           inputMode="numeric"
                           value={bossForm.requiredCombatPower}
@@ -627,11 +661,11 @@ function App() {
                               requiredCombatPower: event.target.value.replace(/[^\d,]/g, ""),
                             }))
                           }
-                          placeholder="예: 180000000"
+                          placeholder="?? 180000000"
                         />
                       </label>
                       <label>
-                        <span>결정석 금액</span>
+                        <span>寃곗젙??湲덉븸</span>
                         <input
                           inputMode="numeric"
                           value={bossForm.crystalPrice}
@@ -641,14 +675,14 @@ function App() {
                               crystalPrice: event.target.value.replace(/[^\d,]/g, ""),
                             }))
                           }
-                          placeholder="예: 396000000"
+                          placeholder="?? 396000000"
                         />
                       </label>
                     </div>
                     <div className="form-actions">
-                      <button type="submit">수정 저장</button>
+                      <button type="submit">?섏젙 ???/button>
                       <button className="secondary-button" type="button" onClick={resetBossForm}>
-                        취소
+                        痍⑥냼
                       </button>
                     </div>
                   </form>
@@ -657,26 +691,65 @@ function App() {
 
               {unknownBosses.length > 0 ? (
                 <div className="notice-box">
-                  <strong>요구 전투력 미정 보스 {unknownBosses.length}개</strong>
-                  <p>CSV에서 요구 전투력이 `-`인 보스는 별도로 분리해서 표시합니다.</p>
+                  <strong>?붽뎄 ?꾪닾??誘몄젙 蹂댁뒪 {unknownBosses.length}媛?/strong>
+                  <p>CSV?먯꽌 ?붽뎄 ?꾪닾?μ씠 `-`??蹂댁뒪??蹂꾨룄濡?遺꾨━?댁꽌 ?쒖떆?⑸땲??</p>
                 </div>
               ) : null}
 
+              <div className="boss-toolbar">
+                <label className="boss-search">
+                  <span>{"\uBCF4\uC2A4 \uAC80\uC0C9"}</span>
+                  <input
+                    value={bossSearch}
+                    onChange={(event) => setBossSearch(event.target.value)}
+                    placeholder={"\uBCF4\uC2A4 \uC774\uB984 \uB610\uB294 \uB09C\uC774\uB3C4 \uAC80\uC0C9"}
+                  />
+                </label>
+                <div
+                  className="boss-filter-group"
+                  role="group"
+                  aria-label={"\uBCF4\uC2A4 \uB09C\uC774\uB3C4 \uD035\uD544\uD130"}
+                >
+                  {[
+                    { value: "ALL", label: "\uC804\uCCB4" },
+                    { value: "EASY", label: "\uC774\uC9C0" },
+                    { value: "NORMAL", label: "\uB178\uB9D0" },
+                    { value: "HARD", label: "\uD558\uB4DC" },
+                    { value: "CHAOS", label: "\uCE74\uC624\uC2A4" },
+                  ].map((filter) => (
+                    <button
+                      key={filter.value}
+                      className={`filter-chip ${bossDifficultyFilter === filter.value ? "is-active" : ""}`}
+                      type="button"
+                      onClick={() => setBossDifficultyFilter(filter.value)}
+                    >
+                      {filter.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <div className="boss-table-wrap">
                 <table className="boss-table">
                   <thead>
                     <tr>
-                      <th>체크</th>
-                      <th>보스</th>
-                      <th>난이도</th>
-                      <th>요구 전투력</th>
-                      <th>부합 여부</th>
-                      <th>결정석 금액</th>
-                      <th>수정</th>
+                      <th>泥댄겕</th>
+                      <th>蹂댁뒪</th>
+                      <th>?쒖씠??/th>
+                      <th>?붽뎄 ?꾪닾??/th>
+                      <th>遺???щ?</th>
+                      <th>寃곗젙??湲덉븸</th>
+                      <th>?섏젙</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {selectedBossRows.map(({ boss, isEligible, isCleared }) => (
+                    {selectedBossRows.length === 0 ? (
+                      <tr>
+                        <td colSpan={7} className="boss-table-empty">
+                          {"\uC870\uAC74\uC5D0 \uB9DE\uB294 \uBCF4\uC2A4\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4."}
+                        </td>
+                      </tr>
+                    ) : (
+                      selectedBossRows.map(({ boss, isEligible, isCleared }) => (
                       <tr key={boss.bossId}>
                         <td>
                           <label className="checkbox-wrap">
@@ -685,13 +758,17 @@ function App() {
                               onChange={() => toggleBossClear(boss.bossId)}
                               type="checkbox"
                             />
-                            <span>{isCleared ? "클리어" : "미클리어"}</span>
+                            <span>{isCleared ? "?대━?? : "誘명겢由ъ뼱"}</span>
                           </label>
                         </td>
                         <td>
                           {boss.bossName}
                         </td>
-                        <td><span className="difficulty-badge">{boss.difficulty}</span></td>
+                        <td>
+                          <span className={`difficulty-badge ${getDifficultyClassName(boss.difficulty)}`}>
+                            {getDifficultyLabel(boss.difficulty)}
+                          </span>
+                        </td>
                         <td>{formatRequiredCombatPower(boss.requiredCombatPower)}</td>
                         <td>
                           <span
@@ -699,25 +776,26 @@ function App() {
                               isEligible === null ? "unknown" : isEligible ? "good" : "bad"
                             }`}
                           >
-                            {isEligible === null ? "요구 전투력 미정" : isEligible ? "도전 가능" : "전투력 부족"}
+                            {isEligible === null ? "?붽뎄 ?꾪닾??誘몄젙" : isEligible ? "?꾩쟾 媛?? : "?꾪닾??遺議?}
                           </span>
                         </td>
                         <td>{formatMeso(boss.crystalPrice)}</td>
                         <td>
                           <button className="secondary-button" type="button" onClick={() => startEditingBoss(boss)}>
-                            수정
+                            ?섏젙
                           </button>
                         </td>
                       </tr>
-                    ))}
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
             </>
           ) : (
             <div className="empty-state">
-              <strong>선택된 캐릭터가 없습니다.</strong>
-              <p>캐릭터를 하나 등록하면 여기서 보스 체크와 수익 집계를 바로 볼 수 있습니다.</p>
+              <strong>?좏깮??罹먮┃?곌? ?놁뒿?덈떎.</strong>
+              <p>罹먮┃?곕? ?섎굹 ?깅줉?섎㈃ ?ш린??蹂댁뒪 泥댄겕? ?섏씡 吏묎퀎瑜?諛붾줈 蹂????덉뒿?덈떎.</p>
             </div>
           )}
         </section>
@@ -735,36 +813,36 @@ function App() {
             <div className="panel-heading">
               <div>
                 <p className="eyebrow">Character Setup</p>
-                <h2 id="character-modal-title">{editingCharacterId ? "캐릭터 수정" : "캐릭터 등록"}</h2>
+                <h2 id="character-modal-title">{editingCharacterId ? "罹먮┃???섏젙" : "罹먮┃???깅줉"}</h2>
               </div>
               <button className="collapse-button" type="button" onClick={resetCharacterForm}>
-                닫기
+                ?リ린
               </button>
             </div>
 
             <form className="setup-form modal-form" onSubmit={handleCharacterSubmit}>
               <div className="form-heading">
-                <h3>{editingCharacterId ? "캐릭터 정보 수정" : "신규 캐릭터 추가"}</h3>
-                <span>입력값: 캐릭터명, 직업, 전투력</span>
+                <h3>{editingCharacterId ? "罹먮┃???뺣낫 ?섏젙" : "?좉퇋 罹먮┃??異붽?"}</h3>
+                <span>?낅젰媛? 罹먮┃?곕챸, 吏곸뾽, ?꾪닾??/span>
               </div>
               <label>
-                <span>캐릭터명</span>
+                <span>罹먮┃?곕챸</span>
                   <input
                     value={characterForm.characterName}
                     onChange={(event) => setCharacterForm((current) => ({ ...current, characterName: event.target.value }))}
-                    placeholder="예: 뵤리도리"
+                    placeholder="?? 逾ㅻ━?꾨━"
                   />
               </label>
               <label>
-                <span>직업</span>
+                <span>吏곸뾽</span>
                 <input
                   value={characterForm.jobName}
                   onChange={(event) => setCharacterForm((current) => ({ ...current, jobName: event.target.value }))}
-                  placeholder="예: 히어로"
+                  placeholder="?? ?덉뼱濡?
                 />
               </label>
               <label>
-                <span>전투력</span>
+                <span>?꾪닾??/span>
                 <input
                   inputMode="numeric"
                   value={characterForm.combatPower}
@@ -774,14 +852,14 @@ function App() {
                       combatPower: event.target.value.replace(/[^\d,]/g, ""),
                     }))
                   }
-                  placeholder="예: 85000000"
+                  placeholder="?? 85000000"
                 />
               </label>
               <div className="form-actions">
-                <button type="submit">{editingCharacterId ? "수정 저장" : "캐릭터 추가"}</button>
+                <button type="submit">{editingCharacterId ? "?섏젙 ??? : "罹먮┃??異붽?"}</button>
                 {editingCharacterId ? (
                   <button className="secondary-button" type="button" onClick={resetCharacterForm}>
-                    취소
+                    痍⑥냼
                   </button>
                 ) : null}
               </div>

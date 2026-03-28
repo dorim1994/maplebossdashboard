@@ -102,7 +102,7 @@ input {
 
 .hero-copy h1 {
   margin: 10px 0 16px;
-  font-size: clamp(2.7rem, 5vw, 5.5rem);
+  font-size: clamp(1.8rem, 3.2vw, 3.4rem);
   line-height: 0.96;
   letter-spacing: -0.04em;
   font-family: "Black Ops One", cursive;
@@ -667,6 +667,48 @@ select {
   overflow-x: auto;
 }
 
+.boss-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 14px;
+  margin: 20px 0 14px;
+}
+
+.boss-search {
+  display: grid;
+  gap: 8px;
+  min-width: min(100%, 320px);
+  flex: 1 1 260px;
+}
+
+.boss-search span {
+  color: var(--muted);
+}
+
+.boss-filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-chip {
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.filter-chip:hover,
+.filter-chip.is-active {
+  transform: translateY(-1px);
+  border-color: rgba(149, 240, 191, 0.34);
+  background: rgba(149, 240, 191, 0.12);
+}
+
 .boss-table {
   width: 100%;
   border-collapse: collapse;
@@ -688,10 +730,33 @@ select {
   display: inline-flex;
   padding: 8px 12px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 227, 141, 0.18);
-  background: rgba(255, 227, 141, 0.08);
-  color: var(--gold);
+  border: 1px solid transparent;
   font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.difficulty-badge.difficulty-hard {
+  background: rgba(255, 82, 82, 0.18);
+  border-color: rgba(255, 82, 82, 0.34);
+  color: #ff6b6b;
+}
+
+.difficulty-badge.difficulty-normal {
+  background: rgba(144, 226, 255, 0.18);
+  border-color: rgba(144, 226, 255, 0.34);
+  color: #90e2ff;
+}
+
+.difficulty-badge.difficulty-easy {
+  background: rgba(173, 181, 189, 0.2);
+  border-color: rgba(173, 181, 189, 0.3);
+  color: #c3c8cf;
+}
+
+.difficulty-badge.difficulty-chaos {
+  background: rgba(0, 0, 0, 0.72);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #f5f7fa;
 }
 
 .checkbox-wrap {
@@ -710,6 +775,11 @@ select {
 .boss-table th {
   color: var(--muted);
   font-weight: 500;
+}
+
+.boss-table-empty {
+  color: var(--muted);
+  text-align: center !important;
 }
 
 .status-pill,
@@ -802,7 +872,7 @@ select {
   }
 
   .hero-copy h1 {
-    font-size: 2.5rem;
+    font-size: 1.9rem;
   }
 
   .signal-grid {
@@ -843,6 +913,14 @@ select {
     width: 100%;
     justify-content: flex-end;
     flex-wrap: wrap;
+  }
+
+  .boss-toolbar {
+    align-items: stretch;
+  }
+
+  .boss-search {
+    min-width: 100%;
   }
 
   .modal-panel {
