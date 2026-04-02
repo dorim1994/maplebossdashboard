@@ -154,6 +154,15 @@ input {
   gap: 16px;
 }
 
+.week-selector {
+  display: grid;
+  gap: 8px;
+}
+
+.week-selector span {
+  color: var(--muted);
+}
+
 .signal-card {
   padding: 24px;
   border-radius: 24px;
